@@ -1,0 +1,5 @@
+profile: service
+defaultPackage: training.video.player
+---
+testFramework: spock
+sourceLanguage: java

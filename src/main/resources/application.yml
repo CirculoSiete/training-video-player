@@ -1,0 +1,32 @@
+---
+micronaut:
+  application:
+    name: training-video-player
+
+---
+micronaut:
+  metrics:
+    enabled: true
+
+---
+micronaut:
+  io:
+    watch:
+      paths: src/main
+      restart: true
+---
+tracing:
+  jaeger:
+    enabled: true
+    sampler:
+      probability: 0.1
+
+---
+micronaut:
+  metrics:
+    enabled: true
+    export:
+      prometheus:
+        enabled: true
+        step: PT1M
+        descriptions: true
