@@ -12,7 +12,7 @@ public class IndexController {
   public ModelAndView index() {
     //GitLabApi gitLabApi = new GitLabApi(GitLabApi.ApiVersion.V3, "http://your.gitlab.server.com", "YOUR_ACCESS_TOKEN");
 
-    var data = CollectionUtils.mapOf("name", "Attendee", "avatar", "https://www.gravatar.com/avatar/f2f6aa8f9b52814cd7c2eb7eecb9cda1.png");
+    var data = CollectionUtils.mapOf("name", "Círculo Siete", "avatar", "https://es.gravatar.com/userimage/2127112/4267fe3a6281a375329f061798691634.jpeg");
 
     return new ModelAndView("index", data);
   }
