@@ -5,6 +5,28 @@ micronaut:
 
 ---
 micronaut:
+  router:
+    static:
+      resources:
+        enabled: true
+        mapping: /**
+        paths:
+          - classpath:public
+          - classpath:css
+          - classpath:META-INF/resources/webjars
+micronaut.router.static-resources.webjars.paths: classpath:META-INF/resources/webjars
+micronaut.router.static-resources.webjars.mapping: /webjars/**
+
+
+micronaut.router.static-resources.css.paths: classpath:/css
+micronaut.router.static-resources.css.mapping: /css/**
+
+micronaut.router.static-resources.js.paths: classpath:/js
+micronaut.router.static-resources.js.mapping: /js/**
+---
+micronaut.views.thymeleaf.enabled: true
+---
+micronaut:
   metrics:
     enabled: true
 
