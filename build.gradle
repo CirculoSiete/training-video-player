@@ -2,6 +2,7 @@ plugins {
   id "net.ltgt.apt-eclipse" version "0.21"
   id "net.ltgt.apt-idea" version "0.21"
   id "com.github.johnrengelman.shadow" version "5.0.0"
+  id 'com.github.ben-manes.versions' version '0.27.0'
   id "application"
   id "groovy"
 }
@@ -23,8 +24,7 @@ dependencies {
   annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
   annotationProcessor "io.micronaut:micronaut-inject-java"
   annotationProcessor "io.micronaut:micronaut-validation"
-  annotationProcessor "io.micronaut.configuration:micronaut-openapi"
-  developmentOnly "io.micronaut:micronaut-runtime-osx:1.2.5"
+  developmentOnly "io.micronaut:micronaut-runtime-osx:$micronautVersion"
   implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
   implementation "io.micronaut:micronaut-management"
   implementation "io.micronaut:micronaut-inject"
@@ -33,7 +33,6 @@ dependencies {
   implementation "io.micronaut.configuration:micronaut-micrometer-core"
   implementation "io.micronaut:micronaut-tracing"
   implementation "javax.annotation:javax.annotation-api"
-  implementation "io.swagger.core.v3:swagger-annotations"
   implementation "io.micronaut:micronaut-http-client"
   implementation "io.micronaut.configuration:micronaut-micrometer-registry-prometheus"
   implementation "io.micronaut:micronaut-http-server-netty"
