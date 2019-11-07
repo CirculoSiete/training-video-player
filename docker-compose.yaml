@@ -2,170 +2,174 @@ version: '2'
 
 services:
   tplayer:
-    image: circulo7/training-video-player:0.0.1
+    image: circulo7/training-video-player:0.0.3
     restart: always
     ports:
-    - "8080:8080"
+      - "8080:8080"
+    environment:
+      GITLABURL: ${GITLABURL}
+      DEVOPSGROUP: devops
+      ACCESSTOKEN: ${ACCESS_TOKEN}
   # http://devops.circulosiete.training/oauth2/callback
   tplayer-proxy:
     image: circulo7/oauth-proxy:0.7
     ports:
       - 4181:4180
     environment:
-      LOGIN_URL: "http://localhost:10080/oauth/authorize"
-      REDEEM_URL: "http://localhost:10080/oauth/token"
-      VALIDATE_URL: "http://localhost:10080/api/v4/user"
-      UPSTREAM: "http://localhost:8080"
+      LOGIN_URL: "${GITLABURL}/oauth/authorize"
+      REDEEM_URL: "${GITLABURL}/oauth/token"
+      VALIDATE_URL: "${GITLABURL}/api/v4/user"
+      UPSTREAM: "http://167.99.115.135:8080"
       ADRESS: "0.0.0.0:4180"
-      CLIENT_ID: "cbad5572f4d39b8578afb0c89dcb95009d481ab11726428ba4b9622165dc6101"
-      CLIENT_SECRET: "1d14f368ac57a2f42c0c992aa0119f66d8c40382b6a55b42a6eb03791532b6ca"
+      CLIENT_ID: "e513b6d5bab315b58328567707f07eac45470036cccd166e795e187e20e65f3b"
+      CLIENT_SECRET: "c4f9ccdba9be01861d6b60ad400860ba6788b77a55c962b1f1de4eab5a6abf3a"
       PROVIDER: "gitlab"
-      COOKIE_SECURE: "true"
+      COOKIE_SECURE: "false"
     restart: always
   redis:
     restart: always
     image: sameersbn/redis:latest
     command:
-    - --loglevel warning
+      - --loglevel warning
     volumes:
-    - ./data/redis:/var/lib/redis
+      - ./data/redis:/var/lib/redis
 
   postgresql:
     restart: always
     image: sameersbn/postgresql:9.6-2
     volumes:
-    - ./data/postgresql:/var/lib/postgresql
+      - ./data/postgresql:/var/lib/postgresql
     environment:
-    - DB_USER=gitlab
-    - DB_PASS=password
-    - DB_NAME=gitlabhq_production
-    - DB_EXTENSION=pg_trgm
+      - DB_USER=gitlab
+      - DB_PASS=password
+      - DB_NAME=gitlabhq_production
+      - DB_EXTENSION=pg_trgm
 
   gitlab:
     restart: always
     image: sameersbn/gitlab:12.4.2
     depends_on:
-    - redis
-    - postgresql
+      - redis
+      - postgresql
     ports:
-    - "10080:80"
-    - "10022:22"
+      - "10080:80"
+      - "10022:22"
     volumes:
-    - ./data/gitlab:/home/git/data
+      - ./data/gitlab:/home/git/data
     environment:
-    - DEBUG=false
+      - DEBUG=false
 
-    - DB_ADAPTER=postgresql
-    - DB_HOST=postgresql
-    - DB_PORT=5432
-    - DB_USER=gitlab
-    - DB_PASS=password
-    - DB_NAME=gitlabhq_production
+      - DB_ADAPTER=postgresql
+      - DB_HOST=postgresql
+      - DB_PORT=5432
+      - DB_USER=gitlab
+      - DB_PASS=password
+      - DB_NAME=gitlabhq_production
 
-    - REDIS_HOST=redis
-    - REDIS_PORT=6379
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
 
-    - TZ=America/Mexico
-    - GITLAB_TIMEZONE=Kolkata
+      - TZ=America/Mexico
+      - GITLAB_TIMEZONE=Kolkata
 
-    - GITLAB_HTTPS=false
-    - SSL_SELF_SIGNED=false
+      - GITLAB_HTTPS=false
+      - SSL_SELF_SIGNED=false
 
-    - GITLAB_HOST=git-training.circulosiete.com
-    - GITLAB_PORT=10080
-    - GITLAB_SSH_PORT=10022
-    - GITLAB_RELATIVE_URL_ROOT=
-    - GITLAB_SECRETS_DB_KEY_BASE=dskjgfdsuygwendksjgyuafsf
-    - GITLAB_SECRETS_SECRET_KEY_BASE=dsmbfhjgsbc774ksjdkjghqwges8
-    - GITLAB_SECRETS_OTP_KEY_BASE=dskjgfjwgdsdasbhjdfsmwquayvmjhh
+      - GITLAB_HOST=git-training.circulosiete.com
+      - GITLAB_PORT=10080
+      - GITLAB_SSH_PORT=10022
+      - GITLAB_RELATIVE_URL_ROOT=
+      - GITLAB_SECRETS_DB_KEY_BASE=dskjgfdsuygwendksjgyuafsf
+      - GITLAB_SECRETS_SECRET_KEY_BASE=dsmbfhjgsbc774ksjdkjghqwges8
+      - GITLAB_SECRETS_OTP_KEY_BASE=dskjgfjwgdsdasbhjdfsmwquayvmjhh
 
-    - GITLAB_ROOT_PASSWORD=supersecreto
-    - GITLAB_ROOT_EMAIL=domingo@circulosiete.com
+      - GITLAB_ROOT_PASSWORD=supersecreto
+      - GITLAB_ROOT_EMAIL=domingo@circulosiete.com
 
-    - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
-    - GITLAB_NOTIFY_PUSHER=false
+      - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
+      - GITLAB_NOTIFY_PUSHER=false
 
-    - GITLAB_EMAIL=training-bot-gitlab@circulosiete.com
-    - GITLAB_EMAIL_REPLY_TO=training-bot-gitlab@circulosiete.com
-    - GITLAB_INCOMING_EMAIL_ADDRESS=training-bot-gitlab@circulosiete.com
+      - GITLAB_EMAIL=training-bot-gitlab@circulosiete.com
+      - GITLAB_EMAIL_REPLY_TO=training-bot-gitlab@circulosiete.com
+      - GITLAB_INCOMING_EMAIL_ADDRESS=training-bot-gitlab@circulosiete.com
 
-    - GITLAB_BACKUP_SCHEDULE=daily
-    - GITLAB_BACKUP_TIME=01:00
+      - GITLAB_BACKUP_SCHEDULE=daily
+      - GITLAB_BACKUP_TIME=01:00
 
-    - SMTP_ENABLED=true
-    - SMTP_DOMAIN=circulosiete.com
-    - SMTP_HOST=smtp.foo.net
-    - SMTP_PORT=587
-    - SMTP_USER=fsdfh
-    - SMTP_PASS=jkfsd
-    - SMTP_STARTTLS=true
-    - SMTP_AUTHENTICATION=login
+      - SMTP_ENABLED=true
+      - SMTP_DOMAIN=circulosiete.com
+      - SMTP_HOST=smtp.foo.net
+      - SMTP_PORT=587
+      - SMTP_USER=fsdfh
+      - SMTP_PASS=jkfsd
+      - SMTP_STARTTLS=true
+      - SMTP_AUTHENTICATION=login
 
-    - IMAP_ENABLED=false
-    - IMAP_HOST=imap.gmail.com
-    - IMAP_PORT=993
-    - IMAP_USER=mailer@example.com
-    - IMAP_PASS=password
-    - IMAP_SSL=true
-    - IMAP_STARTTLS=false
+      - IMAP_ENABLED=false
+      - IMAP_HOST=imap.gmail.com
+      - IMAP_PORT=993
+      - IMAP_USER=mailer@example.com
+      - IMAP_PASS=password
+      - IMAP_SSL=true
+      - IMAP_STARTTLS=false
 
-    - OAUTH_ENABLED=false
-    - OAUTH_AUTO_SIGN_IN_WITH_PROVIDER=
-    - OAUTH_ALLOW_SSO=
-    - OAUTH_BLOCK_AUTO_CREATED_USERS=true
-    - OAUTH_AUTO_LINK_LDAP_USER=false
-    - OAUTH_AUTO_LINK_SAML_USER=false
-    - OAUTH_EXTERNAL_PROVIDERS=
+      - OAUTH_ENABLED=false
+      - OAUTH_AUTO_SIGN_IN_WITH_PROVIDER=
+      - OAUTH_ALLOW_SSO=
+      - OAUTH_BLOCK_AUTO_CREATED_USERS=true
+      - OAUTH_AUTO_LINK_LDAP_USER=false
+      - OAUTH_AUTO_LINK_SAML_USER=false
+      - OAUTH_EXTERNAL_PROVIDERS=
 
-    - OAUTH_CAS3_LABEL=cas3
-    - OAUTH_CAS3_SERVER=
-    - OAUTH_CAS3_DISABLE_SSL_VERIFICATION=false
-    - OAUTH_CAS3_LOGIN_URL=/cas/login
-    - OAUTH_CAS3_VALIDATE_URL=/cas/p3/serviceValidate
-    - OAUTH_CAS3_LOGOUT_URL=/cas/logout
+      - OAUTH_CAS3_LABEL=cas3
+      - OAUTH_CAS3_SERVER=
+      - OAUTH_CAS3_DISABLE_SSL_VERIFICATION=false
+      - OAUTH_CAS3_LOGIN_URL=/cas/login
+      - OAUTH_CAS3_VALIDATE_URL=/cas/p3/serviceValidate
+      - OAUTH_CAS3_LOGOUT_URL=/cas/logout
 
-    - OAUTH_GOOGLE_API_KEY=
-    - OAUTH_GOOGLE_APP_SECRET=
-    - OAUTH_GOOGLE_RESTRICT_DOMAIN=
+      - OAUTH_GOOGLE_API_KEY=
+      - OAUTH_GOOGLE_APP_SECRET=
+      - OAUTH_GOOGLE_RESTRICT_DOMAIN=
 
-    - OAUTH_FACEBOOK_API_KEY=
-    - OAUTH_FACEBOOK_APP_SECRET=
+      - OAUTH_FACEBOOK_API_KEY=
+      - OAUTH_FACEBOOK_APP_SECRET=
 
-    - OAUTH_TWITTER_API_KEY=
-    - OAUTH_TWITTER_APP_SECRET=
+      - OAUTH_TWITTER_API_KEY=
+      - OAUTH_TWITTER_APP_SECRET=
 
-    - OAUTH_GITHUB_API_KEY=
-    - OAUTH_GITHUB_APP_SECRET=
-    - OAUTH_GITHUB_URL=
-    - OAUTH_GITHUB_VERIFY_SSL=
+      - OAUTH_GITHUB_API_KEY=
+      - OAUTH_GITHUB_APP_SECRET=
+      - OAUTH_GITHUB_URL=
+      - OAUTH_GITHUB_VERIFY_SSL=
 
-    - OAUTH_GITLAB_API_KEY=
-    - OAUTH_GITLAB_APP_SECRET=
+      - OAUTH_GITLAB_API_KEY=
+      - OAUTH_GITLAB_APP_SECRET=
 
-    - OAUTH_BITBUCKET_API_KEY=
-    - OAUTH_BITBUCKET_APP_SECRET=
+      - OAUTH_BITBUCKET_API_KEY=
+      - OAUTH_BITBUCKET_APP_SECRET=
 
-    - OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL=
-    - OAUTH_SAML_IDP_CERT_FINGERPRINT=
-    - OAUTH_SAML_IDP_SSO_TARGET_URL=
-    - OAUTH_SAML_ISSUER=
-    - OAUTH_SAML_LABEL="Our SAML Provider"
-    - OAUTH_SAML_NAME_IDENTIFIER_FORMAT=urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-    - OAUTH_SAML_GROUPS_ATTRIBUTE=
-    - OAUTH_SAML_EXTERNAL_GROUPS=
-    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL=
-    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME=
-    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME=
-    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME=
+      - OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL=
+      - OAUTH_SAML_IDP_CERT_FINGERPRINT=
+      - OAUTH_SAML_IDP_SSO_TARGET_URL=
+      - OAUTH_SAML_ISSUER=
+      - OAUTH_SAML_LABEL="Our SAML Provider"
+      - OAUTH_SAML_NAME_IDENTIFIER_FORMAT=urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+      - OAUTH_SAML_GROUPS_ATTRIBUTE=
+      - OAUTH_SAML_EXTERNAL_GROUPS=
+      - OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL=
+      - OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME=
+      - OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME=
+      - OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME=
 
-    - OAUTH_CROWD_SERVER_URL=
-    - OAUTH_CROWD_APP_NAME=
-    - OAUTH_CROWD_APP_PASSWORD=
+      - OAUTH_CROWD_SERVER_URL=
+      - OAUTH_CROWD_APP_NAME=
+      - OAUTH_CROWD_APP_PASSWORD=
 
-    - OAUTH_AUTH0_CLIENT_ID=
-    - OAUTH_AUTH0_CLIENT_SECRET=
-    - OAUTH_AUTH0_DOMAIN=
+      - OAUTH_AUTH0_CLIENT_ID=
+      - OAUTH_AUTH0_CLIENT_SECRET=
+      - OAUTH_AUTH0_DOMAIN=
 
-    - OAUTH_AZURE_API_KEY=
-    - OAUTH_AZURE_API_SECRET=
-    - OAUTH_AZURE_TENANT_ID=
+      - OAUTH_AZURE_API_KEY=
+      - OAUTH_AZURE_API_SECRET=
+      - OAUTH_AZURE_TENANT_ID=

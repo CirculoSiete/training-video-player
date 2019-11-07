@@ -1,7 +1,6 @@
 package training.video.player;
 
 import io.micronaut.context.annotation.Value;
-import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
@@ -15,6 +14,7 @@ import org.gitlab4j.api.models.Member;
 import org.gitlab4j.api.models.User;
 
 import java.util.Base64;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -40,7 +40,7 @@ public class IndexController {
 
   @Get
   public ModelAndView index(HttpRequest<?> request) throws GitLabApiException {
-    var data = CollectionUtils.mapOf("name", "Círculo Siete", "avatar", "https://es.gravatar.com/userimage/2127112/4267fe3a6281a375329f061798691634.jpeg");
+    var data = Map.of("name", "Círculo Siete", "avatar", "https://es.gravatar.com/userimage/2127112/4267fe3a6281a375329f061798691634.jpeg");
 
     Optional<Cookie> cookie = request.getCookies().findCookie(OAUTH_2_PROXY);
     if (cookie.isEmpty()) {
@@ -91,7 +91,7 @@ public class IndexController {
       return new ModelAndView("no_access", data);
     }
 
-    var foo = CollectionUtils.mapOf("name", user.getName(), "avatar", user.getAvatarUrl());
+    var foo = Map.of("name", user.getName(), "avatar", user.getAvatarUrl());
 
     return new ModelAndView("index", foo);
   }
