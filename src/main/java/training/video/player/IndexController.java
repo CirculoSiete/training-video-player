@@ -1,17 +1,12 @@
 package training.video.player;
 
-import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.cookie.Cookie;
 import io.micronaut.views.ModelAndView;
 import lombok.extern.slf4j.Slf4j;
-import org.gitlab4j.api.Constants;
-import org.gitlab4j.api.GitLabApi;
-import org.gitlab4j.api.GitLabApiException;
-import org.gitlab4j.api.models.Member;
-import org.gitlab4j.api.models.User;
+import training.video.player.service.GitLabService;
 
 import java.util.Base64;
 import java.util.Map;
@@ -25,21 +20,18 @@ import static org.apache.commons.validator.routines.EmailValidator.getInstance;
 @Controller("/")
 public class IndexController {
   public static final String OAUTH_2_PROXY = "_oauth2_proxy";
-  @Value("${gitlaburl}")
-  private String gitlabUrl;
+  private final GitLabService gitLabService;
 
-  @Value("${accesstoken}")
-  private String accesstoken;
-
-  @Value("${devopsgroup}")
-  private String devopsgroup;
+  public IndexController(GitLabService gitLabService) {
+    this.gitLabService = gitLabService;
+  }
 
   private static boolean isEmail(String s) {
     return getInstance().isValid(s);
   }
 
   @Get
-  public ModelAndView index(HttpRequest<?> request) throws GitLabApiException {
+  public ModelAndView index(HttpRequest<?> request) {
     var data = Map.of("name", "Círculo Siete", "avatar", "https://es.gravatar.com/userimage/2127112/4267fe3a6281a375329f061798691634.jpeg");
 
     Optional<Cookie> cookie = request.getCookies().findCookie(OAUTH_2_PROXY);
@@ -47,7 +39,7 @@ public class IndexController {
       return new ModelAndView("no_access", data);
     }
 
-    String value = cookie.get().getValue();
+    var value = cookie.get().getValue();
     log.info("Valor obtenido de la cookie de email [{}]", value);
 
     Optional<String> first = Stream.of(value.split("\\|"))
@@ -74,8 +66,7 @@ public class IndexController {
     var userEmail = first.get();
     log.info("Email del usuario [{}]", userEmail);
 
-    var gitLabApi = new GitLabApi(gitlabUrl, Constants.TokenType.ACCESS, accesstoken);
-    Optional<User> optionalUserByEmail = gitLabApi.getUserApi().getOptionalUserByEmail(userEmail);
+    var optionalUserByEmail = gitLabService.findUser(userEmail);
 
     if (optionalUserByEmail.isEmpty()) {
       log.info("No se encontro al usuario con email [{}]", userEmail);
@@ -84,10 +75,10 @@ public class IndexController {
 
     var user = optionalUserByEmail.get();
 
-    Optional<Member> optionalMember = gitLabApi.getGroupApi().getOptionalMember(devopsgroup, user.getId());
+    var optionalMember = gitLabService.findDevOpsMembership(user.getId());
 
     if (optionalMember.isEmpty()) {
-      log.info("El usuario [{}], no se encuentra en el grupo [{}]", user.getId(), devopsgroup);
+      log.info("El usuario [{}], no se encuentra en el grupo [{}]", user.getId());
       return new ModelAndView("no_access", data);
     }
 
