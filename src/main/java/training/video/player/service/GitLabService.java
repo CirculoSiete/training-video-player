@@ -44,6 +44,7 @@ public class GitLabService {
   }
 
   public Optional<Member> findMembership(String groupIdOrPath, Integer userId) {
+    log.info("Trying to find membership of {} in {}", userId, groupIdOrPath);
     return gitLabApi.getGroupApi().getOptionalMember(groupIdOrPath, userId);
   }
 }
