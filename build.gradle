@@ -38,7 +38,7 @@ dependencies {
   implementation "io.micronaut:micronaut-http-client"
   implementation "io.micronaut.configuration:micronaut-micrometer-registry-prometheus"
   implementation "io.micronaut:micronaut-http-server-netty"
-  implementation 'org.gitlab4j:gitlab4j-api:4.12.17'
+  implementation 'org.gitlab4j:gitlab4j-api:4.12.18'
   implementation 'io.micronaut:micronaut-views'
   //implementation "io.micronaut:micronaut-security"
   runtimeOnly "io.jaegertracing:jaeger-thrift"
