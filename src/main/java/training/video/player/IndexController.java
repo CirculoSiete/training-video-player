@@ -109,8 +109,6 @@ public class IndexController {
   }
 
   private org.gitlab4j.api.models.User getUser(HttpRequest<?> request) {
-    var data = Map.of("name", "Círculo Siete", "avatar", "https://es.gravatar.com/userimage/2127112/4267fe3a6281a375329f061798691634.jpeg");
-
     Optional<Cookie> cookie = request.getCookies().findCookie(OAUTH_2_PROXY);
     if (cookie.isEmpty() && !testing) {
       log.info("No se tiene acceso. TESTING: {}", testing);
@@ -175,7 +173,6 @@ public class IndexController {
   public ModelAndView courseDetail(HttpRequest<?> request, @PathVariable String courseId) {
     var user = getUser(request);
     var membership = gitLabService.findMembership(courseId, user.getId());
-
     var group = gitLabService.getGroup(courseId);
 
     if (membership.isEmpty()) {
