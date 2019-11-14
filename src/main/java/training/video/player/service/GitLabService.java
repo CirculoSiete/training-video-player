@@ -103,7 +103,17 @@ public class GitLabService {
   }
 
   public Optional<Member> findMembership(String groupIdOrPath, Integer userId) {
+    //TODO: validar que exista el grupo del curso
     log.info("Trying to find membership of {} in {}", userId, groupIdOrPath);
     return gitLabApi.getGroupApi().getOptionalMember(groupIdOrPath, userId);
+  }
+
+  public Group getGroup(String id) {
+    try {
+      return gitLabApi.getGroupApi().getGroup(id);
+    } catch (GitLabApiException e) {
+      //TODO: mejorar esto
+      throw new RuntimeException(e.getMessage(), e);
+    }
   }
 }

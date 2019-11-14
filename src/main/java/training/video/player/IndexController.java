@@ -5,6 +5,7 @@ import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.cookie.Cookie;
 import io.micronaut.views.ModelAndView;
 import lombok.extern.slf4j.Slf4j;
@@ -79,16 +80,46 @@ public class IndexController {
 
   @Get
   public ModelAndView index(HttpRequest<?> request) {
+
+    var user = this.getUser(request);
+    var groups = gitLabService.foo(user.getId());
+
+    log.info("User is member of {} groups", groups.size());
+
+    var page = Page.builder()
+      .name("Cursos")
+      .title("Título de la página")
+      .build();
+
+    var userToRender = gitLabService.from(user);
+
+    var breadcrum = Breadcrum.from(Stream.of(
+      BreadCrumItem.from("Home", "/"),
+      BreadCrumItem.from("Cursos", "/courses")
+    ));
+
+    var dataToRender = Map.of(
+      "user", userToRender,
+      "groups", gitLabService.from(groups),
+      "page", page,
+      "breadcrum", breadcrum
+    );
+
+    return new ModelAndView("index", dataToRender);
+  }
+
+  private org.gitlab4j.api.models.User getUser(HttpRequest<?> request) {
     var data = Map.of("name", "Círculo Siete", "avatar", "https://es.gravatar.com/userimage/2127112/4267fe3a6281a375329f061798691634.jpeg");
 
     Optional<Cookie> cookie = request.getCookies().findCookie(OAUTH_2_PROXY);
     if (cookie.isEmpty() && !testing) {
       log.info("No se tiene acceso. TESTING: {}", testing);
-      return new ModelAndView("no_access", data);
+      //TODO: lanzar una excepcion adecuada
+      throw new RuntimeException("No acceso");
+      //return new ModelAndView("no_access", data);
     }
 
     String cookieValue = cookie.isPresent() ? cookie.get().getValue() : "";
-
 
     log.info("Valor obtenido de la cookie de email [{}]", cookieValue);
 
@@ -113,7 +144,9 @@ public class IndexController {
 
     if (first.isEmpty()) {
       log.info("No se encontro email.");
-      return new ModelAndView("no_access", data);
+      //TODO: lanzar una excepcion adecuada
+      throw new RuntimeException("No acceso");
+      //return new ModelAndView("no_access", data);
     }
 
     var userEmail = first.get();
@@ -124,45 +157,51 @@ public class IndexController {
 
     if (optionalUserByEmail.isEmpty()) {
       log.info("No se encontro al usuario con email [{}]", userEmail);
-      return new ModelAndView("user_not_found", data);
+      //TODO: lanzar una excepcion adecuada
+      throw new RuntimeException("user_not_found");
+      //return new ModelAndView("user_not_found", data);
     }
 
-    var user = optionalUserByEmail.get();
-    var groups = gitLabService.foo(user.getId());
+    return optionalUserByEmail.get();
+  }
 
-    log.info("User is member of {} groups", groups.size());
+  private String emailForTesting() {
+    log.info("DefaultEmail: {}", defaultEmail);
+    return testing ? (hasText(defaultEmail) ? defaultEmail : null) : null;
+  }
 
-    //var optionalMember = gitLabService.findDevOpsMembership(user.getId());
 
-    /*if (optionalMember.isEmpty()) {
-      log.info("El usuario [{}], no se encuentra en el grupo", user.getId());
-      return new ModelAndView("no_access", data);
-    }*/
+  @Get("/courses/{courseId}")
+  public ModelAndView courseDetail(HttpRequest<?> request, @PathVariable String courseId) {
+    var user = getUser(request);
+    var membership = gitLabService.findMembership(courseId, user.getId());
+
+    var group = gitLabService.getGroup(courseId);
+
+    if (membership.isEmpty()) {
+      //TODO: mejorar esto
+      return index(request);
+    }
 
     var page = Page.builder()
       .name("Cursos")
-      .title("Título de la página")
+      .title(group.getDescription())
       .build();
 
     var userToRender = gitLabService.from(user);
 
     var breadcrum = Breadcrum.from(Stream.of(
       BreadCrumItem.from("Home", "/"),
-      BreadCrumItem.from("Cursos", "/courses")
+      BreadCrumItem.from("Cursos", "/courses"),
+      BreadCrumItem.from(group.getDescription(), "/courses/" + courseId)
     ));
 
     var dataToRender = Map.of(
       "user", userToRender,
-      "groups", gitLabService.from(groups),
       "page", page,
       "breadcrum", breadcrum
     );
 
-    return new ModelAndView("index", dataToRender);
-  }
-
-  private String emailForTesting() {
-    log.info("DefaultEmail: {}", defaultEmail);
-    return testing ? (hasText(defaultEmail) ? defaultEmail : null) : null;
+    return new ModelAndView("course_detail", dataToRender);
   }
 }
