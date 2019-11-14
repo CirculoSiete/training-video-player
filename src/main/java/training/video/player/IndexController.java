@@ -8,11 +8,12 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.cookie.Cookie;
 import io.micronaut.views.ModelAndView;
 import lombok.extern.slf4j.Slf4j;
-import org.gitlab4j.api.models.Group;
-import org.gitlab4j.api.models.Project;
 import training.video.player.service.GitLabService;
 
-import java.util.*;
+import java.util.Base64;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import static io.micronaut.core.util.StringUtils.hasText;
 import static java.util.Optional.ofNullable;
@@ -100,7 +101,10 @@ public class IndexController {
       return new ModelAndView("no_access", data);
     }
 
-    var foo = Map.of("name", user.getName(), "avatar", user.getAvatarUrl());
+    var foo = Map.of(
+      "user", gitLabService.from(user),
+      "groups", gitLabService.from(groups)
+    );
 
     return new ModelAndView("index", foo);
   }

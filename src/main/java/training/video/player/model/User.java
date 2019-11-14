@@ -8,7 +8,7 @@ import lombok.Data;
 public class User {
   private String name;
   private String username;
-  private Long id;
+  private Integer id;
   private String email;
   private String avatarUrl;
   private Boolean isAdmin;

@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.stream.Collectors.toList;
 import static org.gitlab4j.api.Constants.TokenType.ACCESS;
 import static org.gitlab4j.api.models.ImpersonationToken.Scope.API;
 import static org.gitlab4j.api.models.ImpersonationToken.Scope.READ_USER;
@@ -61,6 +62,36 @@ public class GitLabService {
     } catch (GitLabApiException e) {
       throw new RuntimeException(e.getMessage(), e);
     }
+  }
+
+  public training.video.player.model.Group from(Group source) {
+    return training.video.player.model.Group.builder()
+      .avatarUrl(source.getAvatarUrl())
+      .description(source.getDescription())
+      .fullName(source.getFullName())
+      .fullPath(source.getFullPath())
+      .id(source.getId())
+      .name(source.getName())
+      .path(source.getPath())
+      .webUrl(source.getWebUrl())
+      .build();
+  }
+
+  public List<training.video.player.model.Group> from(List<Group> source) {
+    return source.stream()
+      .map(this::from)
+      .collect(toList());
+  }
+
+  public training.video.player.model.User from(User source) {
+    return training.video.player.model.User.builder()
+      .avatarUrl(source.getAvatarUrl())
+      .email(source.getEmail())
+      .id(source.getId())
+      .isAdmin(source.getIsAdmin())
+      .name(source.getName())
+      .username(source.getUsername())
+      .build();
   }
 
   public Optional<User> findUser(String email) {

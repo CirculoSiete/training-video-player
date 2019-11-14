@@ -25,9 +25,9 @@
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
                     <div class="dropdown profile-element">
-                        <img alt="image" class="rounded-circle" th:src="@{${avatar}}"/>
+                        <img alt="image" class="rounded-circle" th:src="@{${user.avatarUrl}}"/>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="block m-t-xs font-bold" th:text="${name}"></span>
+                            <span class="block m-t-xs font-bold" th:text="${user.name}"></span>
                         </a>
                     </div>
                     <div class="logo-element">
