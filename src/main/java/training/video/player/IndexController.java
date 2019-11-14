@@ -8,12 +8,11 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.cookie.Cookie;
 import io.micronaut.views.ModelAndView;
 import lombok.extern.slf4j.Slf4j;
+import org.gitlab4j.api.models.Group;
+import org.gitlab4j.api.models.Project;
 import training.video.player.service.GitLabService;
 
-import java.util.Base64;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static io.micronaut.core.util.StringUtils.hasText;
 import static java.util.Optional.ofNullable;
@@ -90,6 +89,9 @@ public class IndexController {
     }
 
     var user = optionalUserByEmail.get();
+    var groups = gitLabService.foo(user.getId());
+
+    log.info("User is member of {} groups", groups.size());
 
     var optionalMember = gitLabService.findDevOpsMembership(user.getId());
 
