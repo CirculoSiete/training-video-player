@@ -9,10 +9,8 @@ import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.cookie.Cookie;
 import io.micronaut.views.ModelAndView;
 import lombok.extern.slf4j.Slf4j;
-import training.video.player.model.BreadCrumItem;
-import training.video.player.model.Breadcrum;
-import training.video.player.model.Page;
-import training.video.player.model.User;
+import training.video.player.model.*;
+import training.video.player.service.CourseService;
 import training.video.player.service.GitLabService;
 
 import java.util.Base64;
@@ -22,6 +20,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.micronaut.core.util.StringUtils.hasText;
+import static java.util.Collections.EMPTY_LIST;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.validator.routines.EmailValidator.getInstance;
@@ -31,14 +30,15 @@ import static org.apache.commons.validator.routines.EmailValidator.getInstance;
 public class IndexController {
   public static final String OAUTH_2_PROXY = "_oauth2_proxy";
   private final GitLabService gitLabService;
+  private final CourseService courseService;
   @Value("${defaultemail:''}")
   private String defaultEmail;
   @Value("${testing:false}")
   private Boolean testing;
 
-
-  public IndexController(GitLabService gitLabService) {
+  public IndexController(GitLabService gitLabService, CourseService courseService) {
     this.gitLabService = gitLabService;
+    this.courseService = courseService;
   }
 
   private static boolean isEmail(String s) {
@@ -185,6 +185,12 @@ public class IndexController {
       .title(group.getDescription())
       .build();
 
+    var sessions = courseService.findCourse(courseId)
+      .map(Course::getSessions)
+      .orElse(EMPTY_LIST);
+
+    log.info("Sessions with video {}", sessions.size());
+
     var userToRender = gitLabService.from(user);
 
     var breadcrum = Breadcrum.from(Stream.of(
@@ -195,6 +201,8 @@ public class IndexController {
 
     var dataToRender = Map.of(
       "user", userToRender,
+      //"course", course,
+      "sessions", sessions,
       "page", page,
       "breadcrum", breadcrum
     );

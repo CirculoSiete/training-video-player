@@ -5,35 +5,23 @@
 </head>
 <body>
 <section>
-    <div class="row">
-        <div class="col-lg-6">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h5>Clase 1</h5>
-                </div>
-                <div class="ibox-content">
-                    <figure>
-                        <iframe src="https://player.vimeo.com/video/370569178" width="640" height="360" frameborder="0"
+    <span th:each="session : ${sessions}">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="ibox ">
+                    <div class="ibox-title">
+                        <h5 th:text="${session.name}"></h5>
+                    </div>
+                    <div class="ibox-content">
+                        <figure>
+                            <iframe th:src="${session.videoUrl}" width="640" height="360" frameborder="0"
                                 allow="autoplay; fullscreen" allowfullscreen></iframe>
-                    </figure>
+                        </figure>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="col-lg-6">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h5>Clase 2</h5>
-                </div>
-                <div class="ibox-content">
-                    <figure>
-                        <iframe src="https://player.vimeo.com/video/370569716" width="640" height="360" frameborder="0"
-                                allow="autoplay; fullscreen" allowfullscreen></iframe>
-                    </figure>
-                </div>
-            </div>
-        </div>
-    </div>
+    </span>
 </section>
 </body>
 </html>
