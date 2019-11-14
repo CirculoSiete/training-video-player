@@ -1,12 +1,45 @@
 <!DOCTYPE html>
-<html lang="en" th:replace="~{layoutFile :: layout(~{::title}, ~{::section})}" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" th:replace="~{layout_site :: layout(~{::title}, ~{::section})}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Home</title>
 </head>
 <body>
 <section>
-    <h1 th:if="${loggedIn}">username: <span th:text="${username}"></span></h1>
-    <h1 th:unless="${loggedIn}">You are not logged in</h1>
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Cursos inscritos.</h5>
+                    <div class="ibox-tools">
+                        <!--
+                        <a href="" class="btn btn-primary btn-xs">Create new project</a>
+                        -->
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="project-list">
+
+                        <table class="table table-hover">
+                            <tbody>
+                            <tr>
+                                <td class="project-title">
+                                    <a href="project_detail.html">Contract with Zender Company</a>
+                                    <br/>
+                                    <small>Created 14.08.2014</small>
+                                </td>
+                                <td class="project-actions">
+                                    <a href="#" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> Ver </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
 </section>
 </body>
 </html>

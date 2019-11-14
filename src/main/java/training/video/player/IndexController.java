@@ -8,12 +8,17 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.cookie.Cookie;
 import io.micronaut.views.ModelAndView;
 import lombok.extern.slf4j.Slf4j;
+import training.video.player.model.BreadCrumItem;
+import training.video.player.model.Breadcrum;
+import training.video.player.model.Page;
+import training.video.player.model.User;
 import training.video.player.service.GitLabService;
 
 import java.util.Base64;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static io.micronaut.core.util.StringUtils.hasText;
 import static java.util.Optional.ofNullable;
@@ -37,6 +42,39 @@ public class IndexController {
 
   private static boolean isEmail(String s) {
     return getInstance().isValid(s);
+  }
+
+  @Get("/test")
+  public ModelAndView layout() {
+    var page = Page.builder()
+      .name("Nombre de la página")
+      .title("Título de la página")
+      .build();
+    var user = User.builder()
+      .name("Círculo Siete")
+      .avatarUrl("https://es.gravatar.com/userimage/2127112/4267fe3a6281a375329f061798691634.jpeg")
+      .build();
+
+    var breadcrum = Breadcrum.from(
+      Map.of(
+        "Index", "/",
+        "Cursos 3", "/courses",
+        "Cursos", "/courses"
+      ));
+
+    var data = Map.of(
+      "user", user,
+      "page", page,
+      "breadcrum", breadcrum
+    );
+
+    return new ModelAndView("test", data);
+  }
+
+
+  @Get("/courses")
+  public ModelAndView courses(HttpRequest<?> request) {
+    return index(request);
   }
 
   @Get
@@ -94,19 +132,33 @@ public class IndexController {
 
     log.info("User is member of {} groups", groups.size());
 
-    var optionalMember = gitLabService.findDevOpsMembership(user.getId());
+    //var optionalMember = gitLabService.findDevOpsMembership(user.getId());
 
-    if (optionalMember.isEmpty()) {
+    /*if (optionalMember.isEmpty()) {
       log.info("El usuario [{}], no se encuentra en el grupo", user.getId());
       return new ModelAndView("no_access", data);
-    }
+    }*/
 
-    var foo = Map.of(
-      "user", gitLabService.from(user),
-      "groups", gitLabService.from(groups)
+    var page = Page.builder()
+      .name("Cursos")
+      .title("Título de la página")
+      .build();
+
+    var userToRender = gitLabService.from(user);
+
+    var breadcrum = Breadcrum.from(Stream.of(
+      BreadCrumItem.from("Home", "/"),
+      BreadCrumItem.from("Cursos", "/courses")
+    ));
+
+    var dataToRender = Map.of(
+      "user", userToRender,
+      "groups", gitLabService.from(groups),
+      "page", page,
+      "breadcrum", breadcrum
     );
 
-    return new ModelAndView("index", foo);
+    return new ModelAndView("index", dataToRender);
   }
 
   private String emailForTesting() {
