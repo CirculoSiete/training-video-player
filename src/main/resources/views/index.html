@@ -34,7 +34,7 @@
                                         <small th:text="${group.name}"></small>
                                     </td>
                                     <td class="project-actions">
-                                        <a href="#" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> Ver </a>
+                                        <a th:href="@{'/courses/' + ${group.path}}" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> Ver </a>
                                     </td>
                                 </tr>
                             </th:block>
