@@ -33,9 +33,6 @@ public class GitLabService {
   @Value("${accesstoken}")
   private String accesstoken;
 
-  @Value("${devopsgroup}")
-  private String devopsgroup;
-
   private GitLabApi gitLabApi;
 
   @Async
@@ -96,10 +93,6 @@ public class GitLabService {
 
   public Optional<User> findUser(String email) {
     return gitLabApi.getUserApi().getOptionalUserByEmail(email);
-  }
-
-  public Optional<Member> findDevOpsMembership(Integer userId) {
-    return findMembership(devopsgroup, userId);
   }
 
   public Optional<Member> findMembership(String groupIdOrPath, Integer userId) {
