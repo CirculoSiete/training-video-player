@@ -29,6 +29,10 @@ public class CourseService {
     return Optional.ofNullable(courses.get(id));
   }
 
+  public Boolean hasVideos(String id) {
+    return findCourse(id).isPresent();
+  }
+
   @Async
   @EventListener
   public void init(ServiceStartedEvent event) {

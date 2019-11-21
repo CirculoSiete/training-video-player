@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 import static io.micronaut.core.util.StringUtils.hasText;
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.validator.routines.EmailValidator.getInstance;
 
@@ -98,9 +99,13 @@ public class IndexController {
       BreadCrumItem.from("Cursos", "/courses")
     ));
 
+    var registeredGroups = gitLabService.from(groups).stream()
+      .filter(group -> courseService.hasVideos(group.getPath()))
+      .collect(toList());
+
     var dataToRender = Map.of(
       "user", userToRender,
-      "groups", gitLabService.from(groups),
+      "groups", registeredGroups,
       "page", page,
       "breadcrum", breadcrum
     );
