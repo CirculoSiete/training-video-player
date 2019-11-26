@@ -38,12 +38,11 @@ dependencies {
   implementation "io.micronaut:micronaut-http-client"
   implementation "io.micronaut.configuration:micronaut-micrometer-registry-prometheus"
   implementation "io.micronaut:micronaut-http-server-netty"
-  implementation 'org.gitlab4j:gitlab4j-api:4.12.18'
-  implementation 'io.micronaut:micronaut-views'
+  implementation 'org.gitlab4j:gitlab4j-api:4.14.1'
+  implementation 'io.micronaut:micronaut-views-thymeleaf'
   //implementation "io.micronaut:micronaut-security"
   runtimeOnly "io.jaegertracing:jaeger-thrift"
   runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
-  runtimeOnly 'org.thymeleaf:thymeleaf:3.0.11.RELEASE'
 
 
   implementation 'commons-validator:commons-validator:1.6'
