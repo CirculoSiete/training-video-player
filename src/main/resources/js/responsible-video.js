@@ -1,5 +1,5 @@
 $(function() {
-    var $allVideos = $("iframe[src^='http://player.vimeo.com'], iframe[src^='http://www.youtube.com'], object, embed"),
+    var $allVideos = $("iframe[src^='https://player.vimeo.com'], iframe[src^='http://www.youtube.com'], object, embed"),
         $fluidEl = $("figure");
 
     $allVideos.each(function() {

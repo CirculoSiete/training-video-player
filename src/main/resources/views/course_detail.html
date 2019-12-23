@@ -6,21 +6,6 @@
 <body>
 <section>
     <span th:each="session : ${sessions}">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="ibox ">
-                    <div class="ibox-title">
-                        <h5 th:text="${session.name}"></h5>
-                    </div>
-                    <div class="ibox-content">
-                        <figure>
-                            <iframe th:src="${session.videoUrl}" width="640" height="360" frameborder="0"
-                                allow="autoplay; fullscreen" allowfullscreen></iframe>
-                        </figure>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="row">
                 <div class="col-lg-6">
@@ -48,13 +33,10 @@
                         <div class="ibox-content">
                             <figure>
 
-                                <iframe
-                                        src="http://www.youtube.com/embed/bwj2s_5e12U"
-                                        frameborder="0" allowfullscreen=""
-                                        data-aspectratio="0.8211764705882353"
-                                        style="width: 0px; height: 0px;"></iframe>
+                                <iframe width="425" height="349" th:src="${session.videoUrl}" frameborder="0" allowfullscreen></iframe>
+
                                 <!--
-                                <iframe th:src="${session.videoUrl}" frameborder="0" allowfullscreen="" data-aspectratio="0.8211764705882353" style="width: 0px; height: 0px;"></iframe>
+                                <iframe width="425" height="349" src="http://www.youtube.com/embed/bwj2s_5e12U" frameborder="0" allowfullscreen></iframe>
                                 -->
                             </figure>
                         </div>
@@ -62,6 +44,7 @@
                 </div>
 
                 <div class="col-lg-6">
+                    <!--
                     <div class="ibox ">
                         <div class="ibox-title">
                             <h5>Video description</h5>
@@ -109,6 +92,7 @@
                             </div>
                         </div>
                     </div>
+                    -->
                 </div>
 
             </div>
